@@ -38,7 +38,6 @@ else:
         elif message["role"] == "Megiddo Bot":
             st.text(f"{bot_icon} Megiddo Bot:")
             st.text_area("Megiddo Bot", value=message["content"], height=100)
-            st.text_area("Category", value=message["category"], height=100)
 
     if time.time() - st.session_state.last_active_time > 10:
         st.text("Please type your next question.")
@@ -49,7 +48,7 @@ else:
         st.session_state.messages = []
 
         st.session_state.messages.append({"role": "User", "content": user_input})
-
+        
         try:
             vectorizer = TfidfVectorizer()
             all_data = list(df['Query']) + [user_input]
@@ -60,8 +59,11 @@ else:
             sorted_indexes = similarity_scores.argsort()[0][-1:]
             response = df.iloc[sorted_indexes[0]]['Response']
             category = df.iloc[sorted_indexes[0]]['Category']
-
-            st.session_state.messages.append({"role": "Megiddo Bot", "content": response, "category": category})
+            
+            st.text(f"{bot_icon} Megiddo Bot:")
+            st.text_area("Megiddo Bot", value=response, height=100)
+            st.text_area("Category", value=category, height=100)
+            st.session_state.messages.append({"role": "Megiddo Bot", "content": response})
 
         except KeyError:
             st.error("Invalid data format in the CSV file. Please check the format and try again.")
